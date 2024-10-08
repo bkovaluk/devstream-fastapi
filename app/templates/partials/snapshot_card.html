@@ -1,0 +1,10 @@
+<div class="card bg-base-100 shadow-md mb-4">
+    <div class="card-body">
+        <h3 class="card-title">{{ snapshot.snapshot_id }}</h3>
+        <p>Target Region: {{ snapshot.target_region }}</p>
+        <p>Status: {{ snapshot.status }}</p>
+        {% if snapshot.target_account_id %}
+        <p>Target Account ID: {{ snapshot.target_account_id }}</p>
+        {% endif %}
+    </div>
+</div>

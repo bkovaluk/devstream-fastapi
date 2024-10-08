@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div id="card-container" class="grid w-full place-items-center min-h-screen">
+  <div class="flex flex-col w-1/2 lg:flex-row">
+    
+    <!-- Report Viewer -->
+    <div id="reports-card" hx-get="/reports" hx-target="#card-container" hx-swap="outerHTML" hx-push-url="/reports"
+         class="grid flex-grow h-32 card bg-base-300 rounded-box place-items-center cursor-pointer">
+      <a href="#" class="link link-hover link-neutral text-2xl font-medium">
+        Report Viewer
+      </a>
+    </div>
+    
+    <div class="divider lg:divider-horizontal">OR</div>
+    
+    <!-- Snapshots Copy Card -->
+    <div id="snapshots-card" hx-get="/snapshots" hx-target="#card-container" hx-swap="outerHTML" hx-push-url="/snapshots"
+         class="grid flex-grow h-32 card bg-base-300 rounded-box place-items-center cursor-pointer">
+      <a href="#" class="link link-hover link-neutral text-2xl font-medium">
+        Snapshots Copy
+      </a>
+    </div>
+
+    <div class="divider lg:divider-horizontal">OR</div>
+
+    <!-- S3 Bucket Creator -->
+    <div id="buckets-card" hx-get="/s3-buckets" hx-target="#card-container" hx-swap="outerHTML" hx-push-url="/s3-buckets"
+         class="grid flex-grow h-32 card bg-base-300 rounded-box place-items-center cursor-pointer">
+      <a href="#" class="link link-hover link-neutral text-2xl font-medium">
+        S3 Bucket Creator
+      </a>
+    </div>
+    
+  </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,15 @@
+<!-- app/templates/partials/side_navbar.html -->
+<div class="drawer-side w-64 bg-base-200">
+    <label for="drawer-toggle" class="drawer-overlay"></label>
+    <ul class="menu p-4 overflow-y-auto w-64 bg-base-200 text-base-content">
+        <li class="menu-title">
+            <span>Main Navigation</span>
+        </li>
+        <li><a hx-get="/dashboard" hx-target="#content" hx-swap="innerHTML">Dashboard</a></li>
+        <li><a hx-get="/s3-tools" hx-target="#content" hx-swap="innerHTML">S3 Tools</a></li>
+        <li><a hx-get="/secrets-manager" hx-target="#content" hx-swap="innerHTML">Secrets Manager</a></li>
+        <li><a hx-get="/db-snapshots" hx-target="#content" hx-swap="innerHTML">DB Snapshots</a></li>
+        <!-- Add more navigation items as needed -->
+    </ul>
+</div>
+  

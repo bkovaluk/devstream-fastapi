@@ -1,0 +1,31 @@
+# Ignore Python cache and compiled files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore version control files
+.git
+.gitignore
+
+# Ignore development environment files
+.idea/
+.vscode/
+*.env
+
+# Ignore Dockerfile itself and other build-related files
+Dockerfile
+.dockerignore
+
+# Ignore unit tests and test data
+tests/
+test_*.py
+
+# Ignore any environment or system-specific files
+.env
+*.log
+*.DS_Store
+
+# Ignore any local data or temporary files
+*.swp
+*.tmp
+*.bak

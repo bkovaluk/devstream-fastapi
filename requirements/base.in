@@ -1,0 +1,21 @@
+# FastAPI application
+fastapi
+python-multipart
+uvicorn[standard]
+httpx
+celery
+flower
+redis
+boto3
+
+# Templates
+Jinja2
+
+# Database
+SQLAlchemy[asyncio]
+alembic
+psycopg2-binary
+asyncpg
+
+# Other
+Faker

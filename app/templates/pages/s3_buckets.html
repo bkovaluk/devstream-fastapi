@@ -1,0 +1,63 @@
+{% if not is_htmx %}
+    {% extends "base.html" %}
+{% endif %}
+
+{% block title %}S3 Bucket Creator{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+    
+    <!-- Form for creating a new S3 Bucket -->
+    <h2 class="text-2xl font-bold mb-4">Create a New S3 Bucket</h2>
+    <form id="s3-bucket-form" 
+          hx-post="/s3-buckets/create" 
+          hx-target="#s3-buckets-list" 
+          hx-swap="beforeend"
+          class="p-4 border rounded-md shadow-md">
+        
+        <div class="form-control mb-4">
+            <label class="label">
+                <span class="label-text">AWS Account</span>
+            </label>
+            <select name="account_id" id="account_id" class="select select-bordered w-full">
+                {% for account in aws_accounts %}
+                <option value="{{ account.account_id }}">{{ account.alias }} ({{ account.account_id }})</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-control mb-4">
+            <label class="label">
+                <span class="label-text">Bucket Name</span>
+            </label>
+            <input type="text" name="bucket_name" id="bucket_name" class="input input-bordered w-full" placeholder="Enter bucket name" required>
+        </div>
+
+        <div class="form-control mb-4">
+            <label class="label">
+                <span class="label-text">Region</span>
+            </label>
+            <input type="text" name="region" id="region" class="input input-bordered w-full" placeholder="Enter region (e.g. us-east-1)" required>
+        </div>
+
+        <div class="form-control mb-4">
+            <label class="label">
+                <span class="label-text">Encryption Type</span>
+            </label>
+            <select name="encryption_type" id="encryption_type" class="select select-bordered w-full">
+                <option value="s3">S3 Managed Keys</option>
+                <option value="kms">KMS Keys</option>
+            </select>
+        </div>
+
+        <div id="kms_alias_input" class="form-control mb-4">
+            <label class="label">
+                <span class="label-text">KMS Alias (Optional)</span>
+            </label>
+            <input type="text" name="kms_alias" id="kms_alias" class="input input-bordered w-full" placeholder="Enter KMS Alias if using KMS encryption">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Create S3 Bucket</button>
+    </form>
+</div>
+{% endblock %}

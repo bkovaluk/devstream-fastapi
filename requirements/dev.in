@@ -1,0 +1,12 @@
+-r base.in
+
+pytest
+pytest-env
+ruff
+isort
+coverage
+
+ipdb
+ipython
+
+requests

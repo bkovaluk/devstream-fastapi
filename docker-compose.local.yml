@@ -1,0 +1,100 @@
+x-base-app-conf: &base_app_conf
+  env_file: .env
+  stdin_open: true
+  tty: true
+
+services:
+  # FastAPI Application
+  fasthtmx_app:
+    <<: *base_app_conf
+    image: fasthtmx_app:latest
+    container_name: fasthtmx_app
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - "./app:/src/app"
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    depends_on:
+      - db
+      - redis
+
+  # Celery Workers
+  celery:
+    <<: *base_app_conf
+    image: fasthtmx_app:latest
+    container_name: fasthtmx_celery
+    volumes:
+      - "./app:/src/app"
+    command: ["celery", "-A", "app.main.celery_app", "worker", "--loglevel=info"]
+    links:
+      - redis
+      - db
+    depends_on:
+      - redis
+      - db
+
+  # Flower Monitoring for Celery
+  flower:
+    <<: *base_app_conf
+    image: fasthtmx_app:latest
+    container_name: fasthtmx_flower
+    ports:
+      - "5555:5555"
+    command: ["celery", "-A", "app.main.celery_app", "flower", "--port=5555"]
+    links:
+      - redis
+      - db
+    depends_on:
+      - celery
+
+  # Tailwind CSS watcher
+  fasthtmx-npm-watch:
+    <<: *base_app_conf
+    image: fasthtmx_app:latest
+    container_name: fasthtmx-npm-watch
+    working_dir: /src
+    command: npm run watch:tailwindcss
+    restart: always
+    volumes:
+      - "./app:/src/app"
+    depends_on:
+      - fasthtmx_app
+
+  # Apply database migrations
+  fasthtmx_app_migrate:
+    <<: *base_app_conf
+    image: fasthtmx_app:latest
+    container_name: fasthtmx_app_migrate
+    command: bash -c """sleep 5 && alembic -c app/sql/alembic.ini upgrade head"""
+    restart: no
+    volumes:
+      - "./app:/src/app"
+    depends_on:
+      - db
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    restart: always
+
+  # PostgreSQL database
+  db:
+    image: postgres:16.1-alpine
+    container_name: db
+    restart: always
+    environment:
+      - POSTGRES_DB=mydatabase
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - fastapi_db:/var/lib/postgresql/data
+
+volumes:
+  fastapi_db:
