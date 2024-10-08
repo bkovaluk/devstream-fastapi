@@ -1,129 +1,122 @@
-# FastAPI + Jinja2 + HTMX + Docker - TODO App Showcase
+# DEVSTREAM
 
 ## Overview
 
-This project is a simple showcase of a TODO App implemented using FastAPI, HTMX, Jinja2 with DaisyUI, and Tailwind CSS. The goal is to demonstrate the efficiency and synergy of these technologies in a web application.
+This project showcases a FastAPI application for managing AWS resources like **RDS snapshots** and **S3 buckets**, using technologies such as HTMX, Jinja2, Tailwind CSS, and Celery. It demonstrates how to build an efficient web interface to manage cloud infrastructure across multiple AWS accounts.
 
-Additionally, a fake fun facts generator has been integrated for a playful touch. Access it through the following links:
+### Key Features
 
-- Home: http://localhost:8000
-- Full Load Fun Facts: http://localhost:8000/fun-fact-full-load
-- Partial Load Fun Facts: http://localhost:8000/fun-fact-partial-load
-
-![Home preview](screenshots/home_view.png)
-![TODO App preview](screenshots/todo_app.png)
-![TODO App preview](screenshots/funfact_app.png)
-
-Explore the seamless integration of FastAPI, HTMX, Jinja2, DaisyUI, and Tailwind CSS in this demonstration
+- **AWS Account Management**: Add and manage AWS accounts with role assumptions for cross-account operations.
+- **RDS Snapshot Management**: Copy and share RDS and RDS Cluster snapshots across AWS accounts and regions.
+- **S3 Bucket Management**: Create S3 buckets in multiple AWS accounts with customizable access policies.
+- **HTMX Integration**: Seamless, partial page updates using HTMX for responsive user interaction.
+- **Celery + Redis**: Handle long-running background tasks like snapshot copying/sharing asynchronously.
 
 ### Technologies Used
 
-1. **FastAPI**
+1. **FastAPI**: High-performance Python framework for building APIs.
+2. **HTMX**: JavaScript library that simplifies dynamic content updates via AJAX.
+3. **Jinja2**: Template engine for dynamic HTML generation.
+4. **Tailwind CSS + DaisyUI**: Utility-first CSS framework combined with UI components for modern designs.
+5. **Celery**: Distributed task queue used for background jobs, like snapshot and bucket creation.
+6. **Redis**: Message broker used by Celery for task management.
+7. **Docker**: Containerization of the app and its dependencies.
 
-   - FastAPI is a modern, fast (high-performance), web framework for building APIs with Python 3.8+ based on standard Python type hints.
+### Features in Depth
 
-2. **HTMX**
+#### **1. AWS Account Management**
+   Manage multiple AWS accounts, enabling role-based cross-account operations. Accounts are stored in a database with associated role ARNs and environment details.
 
-   - HTMX is a lightweight JavaScript library for creating dynamic, seamless user interfaces. It allows for updating parts of a webpage using AJAX requests, providing a smooth user experience.
+#### **2. RDS Snapshot Management**
+   - Copy RDS and RDS Cluster snapshots to different AWS regions/accounts.
+   - Share snapshots by modifying snapshot attributes to enable sharing with other AWS accounts.
 
-3. **Jinja2**
+#### **3. S3 Bucket Management**
+   - Create new S3 buckets in multiple AWS accounts.
+   - Choose the bucket name, region, encryption type (S3 or KMS), and apply an access policy generated from a Jinja2 template.
 
-   - Jinja2 is a template engine for Python that simplifies the process of integrating dynamic content into web applications. It enables the creation of dynamic templates, allowing developers to seamlessly blend Python logic with HTML for efficient and maintainable code.
+### Project Structure
 
-4. **Tailwind CSS with DaisyUI**
-   - Tailwind CSS is a utility-first CSS framework that provides low-level utility classes to build designs directly in your markup. DaisyUI, as an extension to Tailwind CSS, enriches the framework with additional components and features, offering a comprehensive toolkit for crafting modern and responsive user interfaces with ease.
+The app follows a modular structure, with dedicated directories for each feature:
 
-### Features
+- **app/snapshots**: Contains logic for RDS snapshot copying and sharing.
+- **app/s3_buckets**: Logic for S3 bucket creation.
+- **app/core**: Shared utilities for handling AWS account management, role assumption, and environment settings.
 
-- List TODO items
-- Create new TODO items
-- Remove specific TODO items
-- Clear all TODO items
-- Get random fake Fun Facts
+### Setup
 
-### Development Setup
+#### 1. **Install Dependencies**
 
-To build the application and its dependencies:
-
-```bash
-make build
-```
-
-To start the application:
-
-```bash
-make up
-```
-
-To shut down the application:
+Install all project dependencies using **Poetry**:
 
 ```bash
-make down
+poetry install
 ```
 
-To run tests (ensure the application is running first):
+#### 2. **Docker Setup**
+
+For local development:
+
+```bash
+docker-compose -f docker-compose.local.yml up --build
+```
+
+For production setup:
+
+```bash
+docker-compose -f docker-compose.prod.yml up --build
+```
+
+#### 3. **Makefile Commands**
+
+- **build**: `make build` to build the Docker image.
+- **up**: `make up` to start the application.
+- **down**: `make down` to stop the application.
+- **tests**: `make tests` to run all unit tests.
+
+### AWS Services
+
+The app integrates multiple AWS services for managing cloud resources:
+
+#### **Snapshots**
+   - **Create** and **copy** snapshots to different regions or accounts.
+   - **Share** RDS snapshots with other AWS accounts.
+   - AWS clients and role assumptions are handled via shared utility methods.
+
+#### **S3 Bucket Creation**
+   - Users can create S3 buckets across AWS accounts with either S3-managed or KMS-managed encryption.
+   - Bucket access policies are dynamically generated based on Jinja2 templates.
+
+### UI & Forms
+
+The application uses HTMX to enhance interactivity with partial page loads. Each form in the app is designed to be user-friendly:
+
+#### **Snapshots Form**
+   Allows users to input snapshot ID, target AWS account, target region, and optional KMS encryption.
+
+#### **S3 Bucket Form**
+   Presents options to select an AWS account, region, bucket name, encryption type, and optional KMS alias.
+
+### Testing & Performance
+
+- **Locust**: Used for load testing.
+- **Playwright**: Used for E2E testing with integrated Docker commands.
+
+#### **Running Tests**
+
+To run the tests, use:
 
 ```bash
 make tests
 ```
 
-### Makefile Commands
+For end-to-end tests:
 
-- `update-deps`: Update project dependencies using pip-compile.
-- `build`: Build the Docker image with the application.
-- `up`: Start the application and its dependencies.
-- `down`: Shut down the application.
-- `attach`: Attach to the running application container.
-- `db-migrate`: Generate Alembic database migrations.
-- `db-upgrade`: Apply Alembic database migrations.
-- `db-downgrade`: Roll back Alembic database migrations.
-- `migration-history`: View Alembic migration history.
-- `bash`: Open a bash shell in the running application container.
-- `run-build`: Build and run the application without using Docker Compose.
-- `run`: Run the application in a Docker container.
-- `run-tests`: Run tests in a Docker container.
-- `tests`: Run application tests in the container.
-- `bootstrap`: Execute the bootstrap script in the running application container.
-- `e2e-tests`: Build and run end-to-end tests using a separate Docker container.
+```bash
+make e2e-tests
+```
 
-### Pre-commit Hooks
+### Security & CORS
 
-The project uses pre-commit with the following hooks:
+The app ensures secure handling of AWS operations, including role assumptions for cross-account access. Additionally, CORS protection is enabled to control resource sharing across different web domains.
 
-- `autoflake`: Removes unused imports and variables.
-- `flake8`: Checks for PEP 8 compliance and code style.
-- `isort`: Sorts import statements.
-- `black`: Formats code using the Black code formatter.
-
-### Security
-
-`CORS Protection`:
-Cross-Origin Resource Sharing (CORS) is a security feature that controls which web domains are permitted to access resources from your web application, preventing unauthorized cross-origin requests.
-
-### Performance tests
-
-Comprehensive performance tests have been crafted using the Locust tool for our Python project. Docker Compose services `perf_tests_full` and `perf_tests_partial` orchestrate the execution of performance scripts.
-
-- perf_tests_full:
-  - Run a full load tests by visiting http://localhost:8089/.
-- perf_tests_partial:
-  - Run a partial load tests by visiting http://localhost:8090/.
-
-Commands:
-
-- `make perf-tests-full`
-- `make perf-tests-partial`
-
-### E2E tests
-
-To ensure the proper functioning of our application and validate the correct display of elements, we utilize Playwright to conduct E2E tests.
-
-Use the following commands to run E2E tests:
-
-- `make e2e-tests-build`: Build the Docker image for E2E tests.
-- `make e2e-tests-bash`: Run an interactive Bash shell inside the E2E test Docker container for manual testing.
-- `make e2e-tests`: Execute Playwright-based E2E tests using pytest.
-
-Before running the E2E tests, make sure to install dependencies and set up the testing environment. Also, ensure the application is running locally or on the specified base URL.
-
-_Feel free to explore and modify the project to suit your needs!_
